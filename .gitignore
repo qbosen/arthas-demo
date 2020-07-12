@@ -2,7 +2,6 @@
 ### Kotlin template
 # Compiled class file
 *.class
-
 # Log file
 *.log
 
@@ -221,3 +220,17 @@ ipython_config.py
 hs_err_pid*
 
 /arthas-output
+!/.idea/*
+.idea/$CACHE_FILE$
+.idea/.gitignore
+.idea/compiler.xml
+.idea/dictionaries/
+.idea/encodings.xml
+.idea/gradle.xml
+.idea/inspectionProfiles/
+.idea/intellij-javadocs-4.0.1.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/thriftCompiler.xml
+.idea/uiDesigner.xml
+.idea/vcs.xml
