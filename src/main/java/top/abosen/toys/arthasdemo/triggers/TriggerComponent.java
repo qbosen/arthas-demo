@@ -37,5 +37,7 @@ public class TriggerComponent {
     void initTriggers() {
         ApplicationContextHelper.applicationContext.getBeansOfType(Trigger.class).values()
                 .forEach(trigger -> triggerMap.put(trigger.getKey(), trigger));
+
+        log.info("Triggers: {}", triggerMap.keySet());
     }
 }
