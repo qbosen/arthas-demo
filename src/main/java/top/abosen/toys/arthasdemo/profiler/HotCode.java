@@ -2,7 +2,10 @@ package top.abosen.toys.arthasdemo.profiler;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import top.abosen.toys.arthasdemo.triggers.TriggerComponent;
+import top.abosen.toys.arthasdemo.triggers.VoidTrigger;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.UUID;
@@ -27,6 +30,14 @@ public class HotCode {
     private static Object array;
     private static volatile boolean condition = true;
 
+    @PostConstruct
+    public void init() {
+        TriggerComponent.register(
+                new VoidTrigger("start-profiler", () -> new Thread(this::hotMethodRun).start()),
+                new VoidTrigger("stop-profiler", this::stopHotMethod)
+        );
+    }
+
     public void hotMethodRun() {
         condition = true;
         while (condition) {
@@ -36,7 +47,8 @@ public class HotCode {
             HotCode.allocate();
         }
     }
-    public void stopHotMethod(){
+
+    public void stopHotMethod() {
         condition = false;
     }
 

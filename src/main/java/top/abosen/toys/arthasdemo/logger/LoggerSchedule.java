@@ -4,8 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import top.abosen.toys.arthasdemo.triggers.TriggerComponent;
 import top.abosen.toys.arthasdemo.triggers.VoidTrigger;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -23,13 +25,11 @@ public class LoggerSchedule {
     private static final ScheduledExecutorService loggerSchedule = Executors.newScheduledThreadPool(1);
     private ScheduledFuture<?> future = null;
 
-    @Bean
-    public VoidTrigger startLogger(@Autowired LoggerSchedule schedule) {
-        return new VoidTrigger("start-logger", schedule::startLog);
-    }
-    @Bean
-    public VoidTrigger stopLogger(@Autowired LoggerSchedule schedule) {
-        return new VoidTrigger("stop-logger", schedule::stopLog);
+    @PostConstruct
+    public void init() {
+        TriggerComponent.register(
+                new VoidTrigger("start-logger", this::startLog),
+                new VoidTrigger("stop-logger", this::stopLog));
     }
 
     public void startLog() {
@@ -51,7 +51,7 @@ public class LoggerSchedule {
     }
 
     @PreDestroy
-    public void close(){
+    public void close() {
         loggerSchedule.shutdown();
     }
 }

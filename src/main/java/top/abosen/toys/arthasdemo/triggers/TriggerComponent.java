@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import top.abosen.toys.arthasdemo.context.ApplicationContextHelper;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -31,13 +29,12 @@ public class TriggerComponent {
         return Optional.ofNullable(result).orElse("OK");
     }
 
-    private final Map<String, Trigger<?>> triggerMap = new HashMap<>();
+    private static final Map<String, Trigger<?>> triggerMap = new HashMap<>();
 
-    @PostConstruct
-    void initTriggers() {
-        ApplicationContextHelper.applicationContext.getBeansOfType(Trigger.class).values()
-                .forEach(trigger -> triggerMap.put(trigger.getKey(), trigger));
-
-        log.info("Triggers: {}", triggerMap.keySet());
+    public static void register(Trigger<?>... triggers) {
+        for (Trigger<?> trigger : triggers) {
+            triggerMap.put(trigger.getKey(), trigger);
+            log.info("Register trigger: {}", trigger.getKey());
+        }
     }
 }

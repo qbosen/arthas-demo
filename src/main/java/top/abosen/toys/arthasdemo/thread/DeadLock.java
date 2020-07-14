@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import top.abosen.toys.arthasdemo.triggers.TriggerComponent;
 import top.abosen.toys.arthasdemo.triggers.VoidTrigger;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
@@ -29,14 +31,11 @@ public class DeadLock {
         Thread.sleep(time);
     }
 
-    @Bean
-    public VoidTrigger deadLockTrigger(@Autowired DeadLock deadLock) {
-        return new VoidTrigger("dead-lock", deadLock::doDeadLock);
-    }
-
-    @Bean
-    public VoidTrigger releaseDeadLockTrigger(@Autowired DeadLock deadLock) {
-        return new VoidTrigger("release-dead-lock", deadLock::releaseDeadLock);
+    @PostConstruct
+    public void init() {
+        TriggerComponent.register(
+                new VoidTrigger("dead-lock", this::doDeadLock),
+                new VoidTrigger("release-dead-lock", this::releaseDeadLock));
     }
 
     public void doDeadLock() {
