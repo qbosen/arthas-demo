@@ -1,14 +1,15 @@
 package top.abosen.toys.arthasdemo.ognl;
 
-import com.github.javafaker.Faker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.abosen.toys.arthasdemo.triggers.Trigger;
 import top.abosen.toys.arthasdemo.triggers.TriggerComponent;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Locale;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author qiubaisen
@@ -16,27 +17,22 @@ import java.util.Locale;
  */
 @Component
 public class WatchDemo {
-    private static final Faker faker = new Faker(Locale.SIMPLIFIED_CHINESE);
 
     @PostConstruct
     public void init() {
         TriggerComponent.register(
                 new Trigger<>("create-user", this::supplyUser),
-                new Trigger<>("consume-adult", () -> consumeUser(supplyUser())));
+                new Trigger<>("consume-adult", () -> consumeUser(supplyUser())),
+                new Trigger<>("complex-user", () -> adultUserGroup(IntStream.range(0, 20).mapToObj(x -> User.random()).collect(Collectors.toList())))
+        );
     }
+
 
     private int userCount = 0;
 
     public User supplyUser() {
         userCount++;
-        LocalDate birthday = faker.date().birthday(10, 25).toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-
-        return User.builder()
-                .name(faker.name().name())
-                .birthday(birthday)
-                .male(faker.bool().bool())
-                .age(LocalDate.now().getYear() - birthday.getYear())
-                .build();
+        return User.random();
     }
 
     public String consumeUser(User user) {
@@ -44,4 +40,7 @@ public class WatchDemo {
         return user.getName();
     }
 
+    public Map<Integer, List<User>> adultUserGroup(List<User> users) {
+        return users.stream().filter(u -> u.getAge() > 18).collect(Collectors.groupingBy(User::getAge));
+    }
 }
