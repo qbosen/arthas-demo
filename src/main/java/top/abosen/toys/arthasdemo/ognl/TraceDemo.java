@@ -7,6 +7,7 @@ import top.abosen.toys.arthasdemo.triggers.TriggerComponent;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -27,7 +28,8 @@ public class TraceDemo {
 
     public Statistics analyze(int n) {
         List<User> collect = IntStream.range(0, n).mapToObj(x -> userRepository.getOne()).collect(Collectors.toList());
-//         List<User> collect = userRepository.getMany(n); //使用redefine优化
+//        IntFunction<User> map = i -> this.userRepository.getOne();  // 保留lambda方法
+//        List<User> collect = userRepository.getMany(n); //使用redefine优化
 
         Statistics.StatisticsHolder statisticsHolder = Statistics.start();
         collect.forEach(statisticsHolder::add);
