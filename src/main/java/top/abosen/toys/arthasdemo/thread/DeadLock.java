@@ -19,8 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class DeadLock {
 
-    ReentrantLock resourceA = new ReentrantLock();
-    ReentrantLock resourceB = new ReentrantLock();
     // 为了避免杀死进程来释放死锁
     private final List<Thread> deadThreads = new ArrayList<>();
 
@@ -37,6 +35,9 @@ public class DeadLock {
     }
 
     public void doDeadLock() {
+        ReentrantLock resourceA = new ReentrantLock();
+        ReentrantLock resourceB = new ReentrantLock();
+
         Thread threadA = new Thread(() -> {
             resourceA.lock();
             log.info(Thread.currentThread() + " get ResourceA");

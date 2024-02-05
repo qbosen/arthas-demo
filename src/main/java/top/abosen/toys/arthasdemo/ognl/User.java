@@ -1,8 +1,10 @@
 package top.abosen.toys.arthasdemo.ognl;
 
-import com.github.javafaker.Faker;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.datafaker.Faker;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -15,6 +17,7 @@ import java.util.Locale;
 
 @Data
 @Builder
+@NoArgsConstructor @AllArgsConstructor
 public class User {
     private String name;
     private LocalDate birthday;
